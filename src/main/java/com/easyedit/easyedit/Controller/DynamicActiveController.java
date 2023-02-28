@@ -30,11 +30,13 @@ public class DynamicActiveController {
     
     @PostMapping(value = "")
     public ResolveResult CreateDynamicActive(@RequestBody String items) throws IOException {
+
         return null;
     }
 
     @GetMapping(value = "/page/{id}")
     public ResolveResult GetDynamicActive(@PathVariable String id) throws IOException {
+        
         return null;
     }
 
