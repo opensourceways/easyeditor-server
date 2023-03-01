@@ -33,26 +33,26 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
     @Override
     public ResponseResult createPage(Page page) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Boolean isPrivate = true;
-        page.setId(1);
+        String nowTime = df.format(LocalDateTime.now());
         page.setTitle(page.getTitle());
-        page.setPath("test");
-        page.setHash("test");
-        page.setDescription("test");
-        page.setIsPrivate(isPrivate);
-        page.setIsPublished(isPrivate);
-        page.setPublishEndDate("test");
-        page.setPublishStartDate("tes");
-        page.setContent("test");
-        page.setContentType("test");
-        page.setUpdatedAt("dfd");
-        page.setAuthorName("ddd");
-        page.setCreatorName("333");;
-        page.setCreatedAt(df.format(LocalDateTime.now()));
+        page.setPath(page.getPath());
+        page.setHash(page.getHash());
+        page.setDescription(page.getDescription());
+        page.setIsPrivate(page.getIsPrivate());
+        page.setIsPublished(page.getIsPublished());
+        page.setPublishStartDate(page.getPublishStartDate());
+        page.setContent(page.getContent());
+        page.setContentType(page.getContent());
+        page.setCreatorName(page.getCreatorName());;
+        page.setAuthorName(page.getAuthorName());
+        page.setCreatedAt(nowTime);
+        page.setUpdatedAt(nowTime);
         
         int r = pageMapper.insert(page);
         if (r <= 0) {
-            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_INSERT).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(
+                ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_INSERT).HttpCode(
+                    HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
         return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
     }
@@ -60,11 +60,13 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
     @Override
     public ResponseResult getPage(String pageId) {
         QueryWrapper<Page> wrapper = new QueryWrapper<>();
-        wrapper.eq("hash", "ndd");
+        wrapper.eq("id", pageId);
 
         Page page = pageMapper.selectOne(wrapper);
         if (page == null) {
-            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            return ResponseResult.setAppHttpCodeEnum(
+                ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(
+                    HttpServletResponse.SC_NOT_FOUND);
         }
         return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
     }

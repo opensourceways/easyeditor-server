@@ -20,8 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.easyedit.mapper")
 public class EasyeditApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EasyeditApplication.class, args);
+	public static void main(String[] args) {		SpringApplication.run(EasyeditApplication.class, args);
 	}
 
 }

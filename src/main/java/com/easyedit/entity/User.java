@@ -21,6 +21,8 @@ public class User implements Serializable {
 
     private String name;
 
+    private String creatorName;
+
     public Integer getId() {
         return id;
     }
@@ -37,11 +39,20 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
     @Override
     public String toString() {
         return "User{" +
             "id = " + id +
             ", name = " + name +
+            ", creatorName = " + creatorName +
         "}";
     }
 }

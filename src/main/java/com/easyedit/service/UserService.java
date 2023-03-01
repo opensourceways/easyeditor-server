@@ -1,6 +1,7 @@
 package com.easyedit.service;
 
 import com.easyedit.entity.User;
+import com.easyedit.util.ResponseResult;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
+    ResponseResult createUser(User user);
+    ResponseResult getUser(String userId);
 }
