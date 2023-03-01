@@ -1,4 +1,4 @@
-package com.easyedit.easyedit.entity;
+package com.easyedit.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

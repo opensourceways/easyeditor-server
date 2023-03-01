@@ -10,17 +10,14 @@
 */
 
 
-package com.easyedit.easyedit;
+package com.easyedit;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-// import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-// @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
-// @ComponentScan(basePackages = {"com.easyedit.*"})
-@MapperScan("com.easyedit.easyedit.mapper")
+@MapperScan("com.easyedit.mapper")
 public class EasyeditApplication {
 
 	public static void main(String[] args) {

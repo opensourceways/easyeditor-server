@@ -9,7 +9,7 @@
  Create: 2023
 */
 
-package com.easyedit.easyedit.Controller;
+package com.easyedit.Controller;
 
 import java.io.IOException;
 
@@ -25,35 +25,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.easyedit.easyedit.entity.Pages;
-import com.easyedit.easyedit.service.IPagesService;
-import com.easyedit.easyedit.service.IUserService;
-import com.easyedit.easyedit.util.ResponseResult;
+import com.easyedit.entity.Page;
+import com.easyedit.service.PageService;
+import com.easyedit.util.ResponseResult;
 
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/dynamicactive")
+@RequestMapping("/page")
 public class DynamicActiveController {
 
     @Autowired
     private HttpServletResponse response;
 
     @Autowired
-    private IPagesService pagesService;
-
-    @Autowired
-    private IUserService userService;
+    private PageService pageService;
 
     /**
-     * @param pagesBody
+     * @param pageBody
      * @return
      * @throws IOException
      */
     @PostMapping(value = "")
-    public ResponseResult CreateDynamicActive(@RequestBody Pages pagesBody) {
+    public ResponseResult CreateDynamicActive(@RequestBody Page pageBody) {
         try {
-            final ResponseResult result = pagesService.createPages(pagesBody);
+            final ResponseResult result = pageService.createPage(pageBody);
             response.setStatus(result.getHttpStatusCode());
             return result;
         } catch (Exception e) {
@@ -62,10 +58,10 @@ public class DynamicActiveController {
         }
     }
 
-    @GetMapping(value = "/page/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseResult GetDynamicActive(@PathVariable String id) throws IOException {
         try {
-            ResponseResult result = userService.getUser(id);
+            ResponseResult result = pageService.getPage(id);
             response.setStatus(result.getHttpStatusCode());
             return result;
         } catch (Exception e) {
@@ -79,7 +75,7 @@ public class DynamicActiveController {
         return null;
     }
 
-    @DeleteMapping(value = "/page/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResolveResult DeleteDynamicActive(@PathVariable String id) {
         return null;
     }

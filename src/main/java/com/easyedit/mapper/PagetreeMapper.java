@@ -1,6 +1,6 @@
-package com.easyedit.easyedit.mapper;
+package com.easyedit.mapper;
 
-import com.easyedit.easyedit.entity.Pagetree;
+import com.easyedit.entity.Pagetree;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

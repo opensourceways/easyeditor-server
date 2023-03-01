@@ -1,6 +1,6 @@
-package com.easyedit.easyedit.service;
+package com.easyedit.service;
 
-import com.easyedit.easyedit.entity.Pagetree;
+import com.easyedit.entity.Pagetree;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author zhongjun
  * @since 2023-02-28
  */
-public interface IPagetreeService extends IService<Pagetree> {
+public interface PagetreeService extends IService<Pagetree> {
 
     
 }

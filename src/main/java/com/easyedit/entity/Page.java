@@ -1,4 +1,4 @@
-package com.easyedit.easyedit.entity;
+package com.easyedit.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,9 +10,9 @@ import java.io.Serializable;
  * </p>
  *
  * @author zhongjun
- * @since 2023-02-28
+ * @since 2023-03-01
  */
-public class Pages implements Serializable {
+public class Page implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,13 +23,9 @@ public class Pages implements Serializable {
 
     private String hash;
 
-    private String name;
-
     private String title;
 
     private String description;
-
-    private Boolean isEvent;
 
     private Boolean isPrivate;
 
@@ -39,9 +35,9 @@ public class Pages implements Serializable {
 
     private String publishEndDate;
 
-    private String text;
+    private String content;
 
-    private String textType;
+    private String contentType;
 
     private String createdAt;
 
@@ -75,14 +71,6 @@ public class Pages implements Serializable {
         this.hash = hash;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -97,14 +85,6 @@ public class Pages implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Boolean getIsEvent() {
-        return isEvent;
-    }
-
-    public void setIsEvent(Boolean isEvent) {
-        this.isEvent = isEvent;
     }
 
     public Boolean getIsPrivate() {
@@ -139,20 +119,20 @@ public class Pages implements Serializable {
         this.publishEndDate = publishEndDate;
     }
 
-    public String getText() {
-        return text;
+    public String getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getTextType() {
-        return textType;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setTextType(String textType) {
-        this.textType = textType;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public String getCreatedAt() {
@@ -189,20 +169,18 @@ public class Pages implements Serializable {
 
     @Override
     public String toString() {
-        return "Pages{" +
+        return "Page{" +
             "id = " + id +
             ", path = " + path +
             ", hash = " + hash +
-            ", name = " + name +
             ", title = " + title +
             ", description = " + description +
-            ", isEvent = " + isEvent +
             ", isPrivate = " + isPrivate +
             ", isPublished = " + isPublished +
             ", publishStartDate = " + publishStartDate +
             ", publishEndDate = " + publishEndDate +
-            ", text = " + text +
-            ", textType = " + textType +
+            ", content = " + content +
+            ", contentType = " + contentType +
             ", createdAt = " + createdAt +
             ", updatedAt = " + updatedAt +
             ", authorName = " + authorName +
