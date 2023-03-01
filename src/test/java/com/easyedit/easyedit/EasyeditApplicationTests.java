@@ -17,7 +17,7 @@ class EasyeditApplicationTests {
 
 	@Test
     void CreateXML() {
-		FastAutoGenerator.create("jdbc:mysql://159.138.45.71:3306/easeedit_test?useUnicode=true&characterEncoding=utf-8&useSSL=true", "", "")
+		FastAutoGenerator.create("jdbc:mysql://0000000:3306/easeedit_test?useUnicode=true&characterEncoding=utf-8&useSSL=true", "", "")
 			.globalConfig(builder -> {
 				builder.author("zhongjun") // 设置作者
 					.enableSwagger() // 开启 swagger 模式
@@ -28,8 +28,8 @@ class EasyeditApplicationTests {
 					.pathInfo(Collections.singletonMap(OutputFile.xml, "C://zhongjun//code//del//edit//")); // 设置mapperXml生成路径
 			})
 			.strategyConfig(builder -> {
-				builder.addInclude("pages") // 设置需要生成的表名
-					.addInclude("pagetree"); 
+				builder.addInclude("user"); // 设置需要生成的表名
+					// .addInclude("pagetree"); 
 			})
 			.templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
 			.execute();

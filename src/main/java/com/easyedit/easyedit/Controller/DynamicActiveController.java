@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.naming.spi.ResolveResult;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,20 +25,53 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.easyedit.easyedit.entity.Pages;
+import com.easyedit.easyedit.service.IPagesService;
+import com.easyedit.easyedit.service.IUserService;
+import com.easyedit.easyedit.util.ResponseResult;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/dynamicactive")
 public class DynamicActiveController {
-    
-    @PostMapping(value = "")
-    public ResolveResult CreateDynamicActive(@RequestBody String items) throws IOException {
 
-        return null;
+    @Autowired
+    private HttpServletResponse response;
+
+    @Autowired
+    private IPagesService pagesService;
+
+    @Autowired
+    private IUserService userService;
+
+    /**
+     * @param pagesBody
+     * @return
+     * @throws IOException
+     */
+    @PostMapping(value = "")
+    public ResponseResult CreateDynamicActive(@RequestBody Pages pagesBody) {
+        try {
+            final ResponseResult result = pagesService.createPages(pagesBody);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
     }
 
     @GetMapping(value = "/page/{id}")
-    public ResolveResult GetDynamicActive(@PathVariable String id) throws IOException {
-        
-        return null;
+    public ResponseResult GetDynamicActive(@PathVariable String id) throws IOException {
+        try {
+            ResponseResult result = userService.getUser(id);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
     }
 
     @PutMapping(value = "/{id}")
