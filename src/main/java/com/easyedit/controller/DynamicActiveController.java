@@ -9,10 +9,8 @@
  Create: 2023
 */
 
-package com.easyedit.Controller;
-
+package com.easyedit.controller;
 import java.io.IOException;
-
 import javax.naming.spi.ResolveResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.easyedit.entity.Page;
-import com.easyedit.entity.User;
+import com.easyedit.interceptor.OneidToken;
 import com.easyedit.service.PageService;
-import com.easyedit.service.UserService;
 import com.easyedit.util.ResponseResult;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -48,6 +44,7 @@ public class DynamicActiveController {
      * @return
      * @throws IOException
      */
+    @OneidToken
     @PostMapping(value = "")
     public ResponseResult CreateDynamicActive(@RequestBody Page pageBody) {
         try {
@@ -60,6 +57,7 @@ public class DynamicActiveController {
         }
     }
 
+    @OneidToken
     @GetMapping(value = "/{id}")
     public ResponseResult GetDynamicActive(@PathVariable String id) throws IOException {
         try {
@@ -72,11 +70,13 @@ public class DynamicActiveController {
         }
     }
 
+    @OneidToken
     @PutMapping(value = "/{id}")
     public ResolveResult UpdateDynamicActive(@PathVariable String id, @RequestBody String items) {
         return null;
     }
 
+    @OneidToken
     @DeleteMapping(value = "/{id}")
     public ResolveResult DeleteDynamicActive(@PathVariable String id) {
         return null;
