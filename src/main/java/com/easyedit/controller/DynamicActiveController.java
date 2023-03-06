@@ -30,7 +30,7 @@ import com.easyedit.util.ResponseResult;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/page")
+@RequestMapping("/api/page")
 public class DynamicActiveController {
 
     @Autowired
