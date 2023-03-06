@@ -11,16 +11,13 @@
 
 package com.easyedit.interceptor;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
-
-// import java.lang.reflect.Method;
 
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -43,6 +40,14 @@ public class Authentication implements HandlerInterceptor{
                 return false;
             }
         }
+
+        // 校验domain
+        String verifyDomainMsg = verifyDomain(httpServletRequest);
+        if (!verifyDomainMsg.equals("success")) {
+            tokenError(httpServletRequest, httpServletResponse, verifyDomainMsg);
+            return false;
+        }
+        
         return true;
     }
 
@@ -59,4 +64,53 @@ public class Authentication implements HandlerInterceptor{
                                 Object o, Exception e) throws Exception {
     }
 
+    /**
+     * 校验domain
+     *
+     * @param httpServletRequest request
+     * @return 是否可访问
+     */
+    private String verifyDomain(HttpServletRequest httpServletRequest) {
+        String referer = httpServletRequest.getHeader("referer");
+        String origin = httpServletRequest.getHeader("origin");
+        String allowDomains = "osinfra.cn;8080";
+        String[] domains = allowDomains.split(";");
+
+        boolean checkReferer = isDomainLegal(domains, referer);
+        boolean checkOrigin = isDomainLegal(domains, origin);
+
+        if (!checkReferer && !checkOrigin) {
+            return "unauthorized";
+        }
+        return "success";
+    }
+
+    private boolean isDomainLegal(String[] domains, String input) {
+        if (StringUtils.isBlank(input)) return true;
+
+        String substring = "";
+        String[] start_path = input.split("//");
+        String mid_path = "";
+        if (start_path.length > 1){
+            mid_path = start_path[1];
+        }
+         
+        if (!StringUtils.isBlank(mid_path)) {
+            String[] sub_path = mid_path.split("/");
+            if (sub_path.length > 0){
+                substring = sub_path[0];
+            }
+        }
+
+        for (String domain : domains) {
+            if (substring.endsWith(domain)) return true;
+        }
+
+        return false;
+    }
+
+    private void tokenError(HttpServletRequest httpServletRequest,
+        HttpServletResponse httpServletResponse, String message) throws IOException {
+        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
+    }
 }
