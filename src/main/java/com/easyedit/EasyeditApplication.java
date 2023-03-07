@@ -16,11 +16,13 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 @SpringBootApplication
 @MapperScan("com.easyedit.mapper")
 public class EasyeditApplication {
 
 	public static void main(String[] args) {
+		System.out.printf("Start to run edit test...");
 		SpringApplication.run(EasyeditApplication.class, args);
 	}
 
