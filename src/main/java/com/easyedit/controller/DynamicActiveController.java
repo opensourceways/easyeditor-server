@@ -44,7 +44,7 @@ public class DynamicActiveController {
      * @return
      * @throws IOException
      */
-    @OneidToken
+    // @OneidToken
     @PostMapping(value = "")
     public ResponseResult CreateDynamicActive(@RequestBody Page pageBody) {
         try {
@@ -57,7 +57,7 @@ public class DynamicActiveController {
         }
     }
 
-    @OneidToken
+    // @OneidToken
     @GetMapping(value = "/{id}")
     public ResponseResult GetDynamicActive(@PathVariable String id) throws IOException {
         try {
@@ -70,13 +70,13 @@ public class DynamicActiveController {
         }
     }
 
-    @OneidToken
+    // @OneidToken
     @PutMapping(value = "/{id}")
     public ResolveResult UpdateDynamicActive(@PathVariable String id, @RequestBody String items) {
         return null;
     }
 
-    @OneidToken
+    // @OneidToken
     @DeleteMapping(value = "/{id}")
     public ResolveResult DeleteDynamicActive(@PathVariable String id) {
         return null;
