@@ -5,15 +5,11 @@ import com.easyedit.entity.Pagetree;
 import com.easyedit.mapper.PageMapper;
 import com.easyedit.mapper.PagetreeMapper;
 import com.easyedit.service.PagetreeService;
-import com.easyedit.util.ResponseResult;
-import com.mysql.cj.xdevapi.JsonArray;
 
-import jakarta.servlet.http.HttpServletResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;

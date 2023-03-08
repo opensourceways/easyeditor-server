@@ -2,7 +2,6 @@ package com.easyedit.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.mysql.cj.xdevapi.JsonArray;
 
 import java.io.Serializable;
 
