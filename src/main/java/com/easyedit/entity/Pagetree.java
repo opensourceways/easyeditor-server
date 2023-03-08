@@ -2,6 +2,8 @@ package com.easyedit.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.mysql.cj.xdevapi.JsonArray;
+
 import java.io.Serializable;
 
 /**
@@ -19,11 +21,7 @@ public class Pagetree implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String path;
-
     private Integer depth;
-
-    private String title;
 
     private Boolean isEvent;
 
@@ -32,6 +30,8 @@ public class Pagetree implements Serializable {
     private Boolean isFolder;
 
     private Integer parent;
+
+    private String ancestors;
 
     private Integer pageId;
 
@@ -43,28 +43,12 @@ public class Pagetree implements Serializable {
         this.id = id;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public Integer getDepth() {
         return depth;
     }
 
     public void setDepth(Integer depth) {
         this.depth = depth;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public Boolean getIsEvent() {
@@ -99,6 +83,14 @@ public class Pagetree implements Serializable {
         this.parent = parent;
     }
 
+    public String getAncestors() {
+        return ancestors;
+    }
+
+    public void setAncestors(String ancestors) {
+        this.ancestors = ancestors;
+    }
+
     public Integer getPageId() {
         return pageId;
     }
@@ -111,13 +103,12 @@ public class Pagetree implements Serializable {
     public String toString() {
         return "Pagetree{" +
             "id = " + id +
-            ", path = " + path +
             ", depth = " + depth +
-            ", title = " + title +
             ", isEvent = " + isEvent +
             ", isPrivate = " + isPrivate +
             ", isFolder = " + isFolder +
             ", parent = " + parent +
+            ", ancestors = " + ancestors +
             ", pageId = " + pageId +
         "}";
     }
