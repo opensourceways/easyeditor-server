@@ -16,6 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface PagetreeService extends IService<Pagetree> {
 
     void createPagetree(Page page);
-    Integer deletePagetree(String pageId);
+    boolean deletePagetree(String pageId);
     void updatePagetree(Page page);
 }

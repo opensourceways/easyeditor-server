@@ -69,10 +69,10 @@ public class PagetreeServiceImpl extends ServiceImpl<PagetreeMapper, Pagetree> i
     }
 
     @Override
-    public Integer deletePagetree(String pageId) {
+    public boolean deletePagetree(String pageId) {
         Pagetree pagetree = pagetreeMapper.selectById(pageId);
         if (pagetree.getIsFolder() == true) {
-            return -1;
+            return false;
         }
 
         Integer parentId = pagetree.getParent();
@@ -87,7 +87,7 @@ public class PagetreeServiceImpl extends ServiceImpl<PagetreeMapper, Pagetree> i
             parent.setIsFolder(false);
             pagetreeMapper.updateById(parent);
         }
-        return 1;
+        return true;
     }
 
     @Override

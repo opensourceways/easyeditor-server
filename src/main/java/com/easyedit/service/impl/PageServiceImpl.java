@@ -37,10 +37,13 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
     @Override
     public ResponseResult createPage(Page page) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String currentTime = df.format(LocalDateTime.now());
         if (page.getIsPublished() == true) {
-            page.setPublishStartDate(df.format(LocalDateTime.now()));
+            page.setPublishStartDate(currentTime);
         }
-        page.setCreatedAt(df.format(LocalDateTime.now()));
+        page.setCreatedAt(currentTime);
+        page.setUpdatedAt(currentTime);
+
         if (page.getFolder().equals("/")) {
             page.setFullName(page.getFolder() + page.getName());
         } else {
@@ -76,6 +79,9 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
     @Override
     public ResponseResult updatePage(String pageId, Page page) {
         page.setId(Integer.parseInt(pageId));
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String currentTime = df.format(LocalDateTime.now());
+        page.setUpdatedAt(currentTime);
 
         int r = pageMapper.updateById(page);
         if (r <= 0) {
@@ -86,13 +92,13 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
 
     @Override
     public ResponseResult deletePage(String pageId) {
-        int r = pagetreeService.deletePagetree(pageId);
-        if (r <= 0) {
+        boolean r = pagetreeService.deletePagetree(pageId);
+        if (r == false) {
             return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
         }
 
-        r = pageMapper.deleteById(pageId);
-        if (r <= 0) {
+        int rr = pageMapper.deleteById(pageId);
+        if (rr <= 0) {
             return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
         }
         final String DELETE_COMPLETE = "Complete deletion of Page.";
