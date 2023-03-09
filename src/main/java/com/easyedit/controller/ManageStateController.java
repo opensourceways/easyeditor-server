@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.easyedit.util.ResponseResult;
 
 @RestController
-@RequestMapping("/api/page")
+@RequestMapping("/api/state")
 public class ManageStateController {
 
     // @OneidToken
