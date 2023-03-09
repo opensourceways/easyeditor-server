@@ -11,7 +11,6 @@
 
 package com.easyedit.controller;
 import java.io.IOException;
-import javax.naming.spi.ResolveResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,14 +71,28 @@ public class DynamicActiveController {
 
     // @OneidToken
     @PutMapping(value = "/{id}")
-    public ResolveResult UpdateDynamicActive(@PathVariable String id, @RequestBody String items) {
-        return null;
+    public ResponseResult UpdateDynamicActive(@PathVariable String id, @RequestBody Page page) {
+        try {
+            ResponseResult result = pageService.updatePage(id, page);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
     }
 
     // @OneidToken
     @DeleteMapping(value = "/{id}")
-    public ResolveResult DeleteDynamicActive(@PathVariable String id) {
-        return null;
+    public ResponseResult DeleteDynamicActive(@PathVariable String id) {
+        try {
+            ResponseResult result = pageService.deletePage(id);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
     }
 }
 
