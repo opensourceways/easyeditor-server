@@ -1,9 +1,14 @@
 package com.easyedit.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -13,12 +18,17 @@ import java.io.Serializable;
  * @author zhongjun
  * @since 2023-02-28
  */
+@TableName(autoResultMap = true)
 public class Pagetree implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    private String path;
+
+    private String name;
 
     private Integer depth;
 
@@ -30,8 +40,10 @@ public class Pagetree implements Serializable {
 
     private Integer parent;
 
-    private String ancestors;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<Integer> ancestors;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer pageId;
 
     public Integer getId() {
@@ -40,6 +52,22 @@ public class Pagetree implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getDepth() {
@@ -82,11 +110,11 @@ public class Pagetree implements Serializable {
         this.parent = parent;
     }
 
-    public String getAncestors() {
+    public List<Integer> getAncestors() {
         return ancestors;
     }
 
-    public void setAncestors(String ancestors) {
+    public void setAncestors(List<Integer> ancestors) {
         this.ancestors = ancestors;
     }
 
@@ -102,6 +130,8 @@ public class Pagetree implements Serializable {
     public String toString() {
         return "Pagetree{" +
             "id = " + id +
+            ", path = " + path +
+            ", name = " + name +
             ", depth = " + depth +
             ", isEvent = " + isEvent +
             ", isPrivate = " + isPrivate +

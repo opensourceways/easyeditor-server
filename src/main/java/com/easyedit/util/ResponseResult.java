@@ -84,6 +84,14 @@ public class ResponseResult implements Serializable {
         return result.error(statusCode, message);
     }
 
+    public static ResponseResult errorResult(Object data) {
+        ResponseResult result = setAppHttpCodeEnum(AppHttpCodeEnum.DATA_ALREADY_EXIST, AppHttpCodeEnum.DATA_ALREADY_EXIST.getMessage());
+        if(data!=null) {
+            result.setData(data);
+        }
+        return result;
+    }
+
     public static ResponseResult okResult(int statusCode, String message) {
         ResponseResult result = new ResponseResult();
         return result.ok(statusCode, null, message);
@@ -152,16 +160,20 @@ public class ResponseResult implements Serializable {
         SUCCESS(200,"successful operation"),
         // 通用失败
         ERROR(5000, "error"),
+        // 请求格式错误
+        BAD_REQUEST(400, "bad request"),
         // 未查询到结果
-        NO_RESULT_FOUND(201, "No result found"),
+        NO_RESULT_FOUND(404, "No result found"),
 
-        NO_DATA_WAS_DELETED(202, "No data was deleted"),
+        NO_DATA_WAS_DELETED(503, "No data was deleted"),
 
-        NO_DATA_WAS_UPDATE(203, "No data was update"),
+        NO_DATA_WAS_UPDATE(503, "No data was update"),
 
-        NO_DATA_WAS_INSERT(204, "No data was insert"),
+        NO_DATA_WAS_INSERT(503, "No data was insert"),
         // 数据插入错误
-        DATA_INSERTION_ERROR(501, "data insertion error");
+        DATA_INSERTION_ERROR(501, "data insertion error"),
+
+        DATA_ALREADY_EXIST(409, "exist data with the same name");
 
         int statusCode;
 

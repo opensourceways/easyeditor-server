@@ -13,8 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-03-01
  */
 public interface PageService extends IService<Page> {
+
     ResponseResult createPage(Page page);
-    ResponseResult getPage(String pageId);
-    ResponseResult updatePage(String pageId, Page page);
-    ResponseResult deletePage(String pageId);
+    ResponseResult getPage(Integer pageId, String path, String name);
+    ResponseResult updatePage(Integer pageId, String path, String name, Page page);
+    ResponseResult deletePage(Integer pageId, String path, String name);
+
 }
