@@ -2,7 +2,6 @@ package com.easyedit.service;
 
 import com.easyedit.entity.Page;
 import com.easyedit.entity.Pagetree;
-import com.easyedit.util.ResponseResult;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -15,7 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface PagetreeService extends IService<Pagetree> {
 
-    void createPagetree(Page page);
-    boolean deletePagetree(String pageId);
-    void updatePagetree(Page page);
+    boolean createPagetree(Page page);
+    boolean updatePagetree(Page page);
+    boolean deletePagetreeById(Integer pageId);
+    boolean deletePagetreeByName(String path, String name);
+
 }

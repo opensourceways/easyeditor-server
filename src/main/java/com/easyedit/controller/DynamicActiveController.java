@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.easyedit.entity.Page;
@@ -45,7 +46,7 @@ public class DynamicActiveController {
      */
     // @OneidToken
     @PostMapping(value = "")
-    public ResponseResult CreateDynamicActive(@RequestBody Page pageBody) {
+    public ResponseResult CreateDynamicActive(@RequestBody Page pageBody) throws IOException {
         try {
             final ResponseResult result = pageService.createPage(pageBody);
             response.setStatus(result.getHttpStatusCode());
@@ -58,9 +59,22 @@ public class DynamicActiveController {
 
     // @OneidToken
     @GetMapping(value = "/{id}")
-    public ResponseResult GetDynamicActive(@PathVariable String id) throws IOException {
+    public ResponseResult GetDynamicActiveById(@PathVariable Integer id) throws IOException {
         try {
-            ResponseResult result = pageService.getPage(id);
+            ResponseResult result = pageService.getPage(id, "", "");
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
+    }
+
+    // @OneidToken
+    @GetMapping(value = "")
+    public ResponseResult GetDynamicActiveByName(@RequestParam("path") String path, @RequestParam("name") String name) throws IOException {
+        try {
+            ResponseResult result = pageService.getPage(-1, path, name);
             response.setStatus(result.getHttpStatusCode());
             return result;
         } catch (Exception e) {
@@ -71,9 +85,22 @@ public class DynamicActiveController {
 
     // @OneidToken
     @PutMapping(value = "/{id}")
-    public ResponseResult UpdateDynamicActive(@PathVariable String id, @RequestBody Page page) {
+    public ResponseResult UpdateDynamicActiveById(@PathVariable Integer id, @RequestBody Page page) throws IOException {
         try {
-            ResponseResult result = pageService.updatePage(id, page);
+            ResponseResult result = pageService.updatePage(id, "", "", page);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
+    }
+
+    // @OneidToken
+    @PutMapping(value = "")
+    public ResponseResult UpdateDynamicActiveByName(@RequestParam("path") String path, @RequestParam("name") String name, @RequestBody Page page) throws IOException {
+        try {
+            ResponseResult result = pageService.updatePage(-1, path, name, page);
             response.setStatus(result.getHttpStatusCode());
             return result;
         } catch (Exception e) {
@@ -84,9 +111,22 @@ public class DynamicActiveController {
 
     // @OneidToken
     @DeleteMapping(value = "/{id}")
-    public ResponseResult DeleteDynamicActive(@PathVariable String id) {
+    public ResponseResult DeleteDynamicActiveById(@PathVariable Integer id) throws IOException {
         try {
-            ResponseResult result = pageService.deletePage(id);
+            ResponseResult result = pageService.deletePage(id, "", "");
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
+    }
+
+    // @OneidToken
+    @DeleteMapping(value = "")
+    public ResponseResult DeleteDynamicActiveByName(@RequestParam("path") String path, @RequestParam("name") String name) throws IOException {
+        try {
+            ResponseResult result = pageService.deletePage(-1, path, name);
             response.setStatus(result.getHttpStatusCode());
             return result;
         } catch (Exception e) {

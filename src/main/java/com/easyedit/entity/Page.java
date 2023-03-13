@@ -23,11 +23,7 @@ public class Page implements Serializable {
 
     private String hash;
 
-    private String folder;
-
     private String name;
-
-    private String fullName;
 
     private String title;
 
@@ -77,28 +73,12 @@ public class Page implements Serializable {
         this.hash = hash;
     }
 
-    public String getFolder() {
-        return folder;
-    }
-
-    public void setFolder(String folder) {
-        this.folder = folder;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     public String getTitle() {
@@ -203,9 +183,7 @@ public class Page implements Serializable {
             "id = " + id +
             ", path = " + path +
             ", hash = " + hash +
-            ", folder = " + folder +
             ", name = " + name +
-            ", fullName = " + fullName +
             ", title = " + title +
             ", description = " + description +
             ", isPrivate = " + isPrivate +

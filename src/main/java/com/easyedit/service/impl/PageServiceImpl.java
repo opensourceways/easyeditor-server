@@ -38,23 +38,14 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
     public ResponseResult createPage(Page page) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String currentTime = df.format(LocalDateTime.now());
-        if (page.getIsPublished() == true) {
-            page.setPublishStartDate(currentTime);
-        }
         page.setCreatedAt(currentTime);
         page.setUpdatedAt(currentTime);
 
-        if (page.getFolder().equals("/")) {
-            page.setFullName(page.getFolder() + page.getName());
-        } else {
-            page.setFullName(page.getFolder() + "/" +page.getName());
-        }
-
         QueryWrapper<Page> wrapper = new QueryWrapper<>();
-        wrapper.eq("path", page.getPath()).eq("folder", page.getFolder()).eq("name", page.getName());
+        wrapper.eq("path", page.getPath()).eq("name", page.getName());
         Page existPage = pageMapper.selectOne(wrapper);
         if (existPage != null) {
-            return ResponseResult.okResult(existPage).HttpCode(HttpServletResponse.SC_OK);
+            return ResponseResult.errorResult(existPage).HttpCode(HttpServletResponse.SC_CONFLICT);
         }
 
         int r = pageMapper.insert(page);
@@ -63,45 +54,118 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
                 ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_INSERT).HttpCode(
                     HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
-        pagetreeService.createPagetree(page);
-        return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
+        boolean isCreated = pagetreeService.createPagetree(page);
+        if (isCreated) {
+            return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
+        } else {
+            pageMapper.deleteById(page);
+            return ResponseResult.errorResult(
+                ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_INSERT).HttpCode(
+                    HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        }
     }
 
     @Override
-    public ResponseResult getPage(String pageId) {
-        Page page = pageMapper.selectById(pageId);
-        if (page == null) {
-            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+    public ResponseResult getPage(Integer pageId, String path, String name) {
+        if (pageId > 0 && path.equals("") && name.equals("")) {
+            Page page = pageMapper.selectById(pageId);
+            if (page == null) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            }
+            return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
         }
-        return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
+
+        if (pageId <= 0 && !path.equals("") && !name.equals("")) {
+            QueryWrapper<Page> wrapper = new QueryWrapper<>();
+            wrapper.eq("path", path).eq("name", name);
+            Page page = pageMapper.selectOne(wrapper);
+            if (page == null) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            }
+            return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
+        }
+
+        return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.BAD_REQUEST).HttpCode(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
-    public ResponseResult updatePage(String pageId, Page page) {
-        page.setId(Integer.parseInt(pageId));
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String currentTime = df.format(LocalDateTime.now());
-        page.setUpdatedAt(currentTime);
+    public ResponseResult updatePage(Integer pageId, String path, String name, Page page) {
+        if (pageId > 0 && path.equals("") && name.equals("")) {
+            Page oldPage = pageMapper.selectById(pageId);
+            if (oldPage == null) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            }
 
-        int r = pageMapper.updateById(page);
-        if (r <= 0) {
-            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            String oldPath = oldPage.getPath();
+            String oldName = oldPage.getName();
+            page.setId(pageId);
+            int r = pageMapper.updateById(page);
+            if (r <= 0) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_UPDATE).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            }
+            if ((page.getPath() != null && !oldPath.equals(page.getPath())) || 
+              (page.getName() != null && !oldName.equals(page.getName()))) {
+                Page newPage = pageMapper.selectById(pageId);
+                boolean isUpdated = pagetreeService.updatePagetree(newPage);
+                if (!isUpdated) {
+                    pageMapper.updateById(oldPage);
+                    return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_UPDATE).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                }
+            }
+            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.SUCCESS).HttpCode(HttpServletResponse.SC_OK);
         }
-        return ResponseResult.okResult(page).HttpCode(HttpServletResponse.SC_OK);
+
+        if (pageId <= 0 && !path.equals("") && !name.equals("")) {
+            QueryWrapper<Page> wrapper = new QueryWrapper<>();
+            wrapper.eq("path", path).eq("name", name);
+
+            Page oldPage = pageMapper.selectOne(wrapper);
+            if (oldPage == null) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            }
+
+            int r = pageMapper.update(page, wrapper);
+            if (r <= 0) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_UPDATE).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            }
+            if ((page.getPath() != null && !path.equals(page.getPath())) || 
+              (page.getName() != null && !name.equals(page.getName()))) {
+                Page newPage = pageMapper.selectById(oldPage.getId());
+                boolean isUpdated = pagetreeService.updatePagetree(newPage);
+                if (!isUpdated) {
+                    pageMapper.updateById(oldPage);
+                    return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_UPDATE).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                }
+            }
+            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.SUCCESS).HttpCode(HttpServletResponse.SC_OK);
+        }
+
+        return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.BAD_REQUEST).HttpCode(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
-    public ResponseResult deletePage(String pageId) {
-        boolean r = pagetreeService.deletePagetree(pageId);
-        if (r == false) {
-            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+    public ResponseResult deletePage(Integer pageId, String path, String name) {
+        if (pageId > 0 && path.equals("") && name.equals("")) {
+            int r = pageMapper.deleteById(pageId);
+            if (r <= 0) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_DELETED).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            }
+            pagetreeService.deletePagetreeById(pageId);
+            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.SUCCESS).HttpCode(HttpServletResponse.SC_OK);
         }
 
-        int rr = pageMapper.deleteById(pageId);
-        if (rr <= 0) {
-            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+        if (pageId <= 0 && !path.equals("") && !name.equals("")) {
+            QueryWrapper<Page> wrapper = new QueryWrapper<>();
+            wrapper.eq("path", path).eq("name", name);
+
+            int r = pageMapper.delete(wrapper);
+            if (r <= 0) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_DELETED).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            }
+            pagetreeService.deletePagetreeByName(path, name);
+            return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.SUCCESS).HttpCode(HttpServletResponse.SC_OK);
         }
-        final String DELETE_COMPLETE = "Complete deletion of Page.";
-        return ResponseResult.okResult(DELETE_COMPLETE).HttpCode(HttpServletResponse.SC_OK);
+
+        return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.BAD_REQUEST).HttpCode(HttpServletResponse.SC_BAD_REQUEST);
     }
 }
