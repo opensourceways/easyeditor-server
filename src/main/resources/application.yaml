@@ -4,5 +4,8 @@ spring:
     url: 
     username: 
     password: 
-
-
+  auth:
+    domain: 127.0.0.1:8888,localhost
+    host: http://127.0.0.1:8888
+  general:
+    community: openeuler
