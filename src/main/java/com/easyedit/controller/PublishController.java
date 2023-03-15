@@ -52,7 +52,8 @@ public class PublishController {
 
     // @OneidToken
     @GetMapping("")
-    public ResponseResult getAllPages(@RequestParam("path") String path, @RequestParam(value = "version", required = false) Integer version) {
+    public ResponseResult getAllPages(@RequestParam("path") String path,
+        @RequestParam(value = "version", required = false) Integer version) {
         try {
             final ResponseResult result = pService.getPublish(path, version);
             response.setStatus(result.getHttpStatusCode());

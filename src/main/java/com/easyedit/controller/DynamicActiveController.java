@@ -11,6 +11,8 @@
 
 package com.easyedit.controller;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -127,6 +129,34 @@ public class DynamicActiveController {
     public ResponseResult DeleteDynamicActiveByName(@RequestParam("path") String path, @RequestParam("name") String name) throws IOException {
         try {
             ResponseResult result = pageService.deletePage(-1, path, name);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
+    }
+
+    // @OneidToken
+    @GetMapping(value = "/profile")
+    public ResponseResult GetDynamicActiveNameIsProfile() throws IOException {
+        try {
+            List<String> siteNames = new ArrayList<String>();
+            siteNames.add("Event_list");
+            ResponseResult result = pageService.getProfile(siteNames);
+            response.setStatus(result.getHttpStatusCode());
+            return result;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return ResponseResult.errorResult(ResponseResult.AppHttpCodeEnum.ERROR);
+        }
+    }
+
+    // @OneidToken
+    @GetMapping(value = "/all")
+    public ResponseResult GetDynamicActiveAllPages(@RequestParam("path") String path) throws IOException {
+        try {
+            ResponseResult result = pageService.getAllByPath(path);
             response.setStatus(result.getHttpStatusCode());
             return result;
         } catch (Exception e) {
