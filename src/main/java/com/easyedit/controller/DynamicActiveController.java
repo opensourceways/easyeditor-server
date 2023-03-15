@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,8 @@ import com.easyedit.entity.Page;
 import com.easyedit.interceptor.OneidToken;
 import com.easyedit.service.PageService;
 import com.easyedit.util.ResponseResult;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -139,7 +142,9 @@ public class DynamicActiveController {
 
     // @OneidToken
     @GetMapping(value = "/profile")
-    public ResponseResult GetDynamicActiveNameIsProfile() throws IOException {
+    public ResponseResult GetDynamicActiveNameIsProfile(
+            HttpServletRequest servletRequest,
+            @CookieValue(value = "_Y_G_", required = false) String token) throws IOException {
         try {
             List<String> siteNames = new ArrayList<String>();
             siteNames.add("Event_list");
