@@ -37,6 +37,10 @@ public class Page implements Serializable {
 
     private String publishEndDate;
 
+    private String type;
+
+    private String locale;
+
     private String content;
 
     private String contentType;
@@ -129,6 +133,22 @@ public class Page implements Serializable {
         this.publishEndDate = publishEndDate;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     public String getContent() {
         return content;
     }
@@ -190,6 +210,8 @@ public class Page implements Serializable {
             ", isPublished = " + isPublished +
             ", publishStartDate = " + publishStartDate +
             ", publishEndDate = " + publishEndDate +
+            ", type = " + type +
+            ", locale = " + locale +
             ", content = " + content +
             ", contentType = " + contentType +
             ", createdAt = " + createdAt +

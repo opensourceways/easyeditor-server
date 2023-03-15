@@ -127,7 +127,10 @@ public class PublishServiceImpl extends ServiceImpl<PublishMapper, Publish> impl
 
         List<Publish> pubs = publishMapper.selectList(wrapper);
         List<Integer> ancestors = new ArrayList<Integer>();
-        List<Object> result = genResult(pubs, ancestors);
+        List<Object> result = new ArrayList<>();
+        if (pubs.size() > 0) {
+            result = genResult(pubs, ancestors);
+        }
         return ResponseResult.okResult(result).HttpCode(HttpServletResponse.SC_OK);
     }
     
@@ -158,6 +161,8 @@ public class PublishServiceImpl extends ServiceImpl<PublishMapper, Publish> impl
 
     private List<Object> genResult(List<Publish> records, List<Integer> ancestors) {
         List<Object> res = new ArrayList<Object>();
+
+
         for (Publish pub : records) {
             QueryWrapper<Pagetree> wrapper = new QueryWrapper<>();
             wrapper.eq("path", pub.getPath()).eq("name", pub.getName());
@@ -170,6 +175,22 @@ public class PublishServiceImpl extends ServiceImpl<PublishMapper, Publish> impl
                 page.put("description", pub.getDescription());
                 page.put("content", pub.getContent());
                 page.put("content_type", pub.getContentType());
+
+                ancestors.add(pt.getId());
+                page.put("items", genResult(records, ancestors));
+                res.add(page);
+                ancestors.remove(pt.getId());
+            }
+        }
+        if (res.size() == 0) {
+            String path = records.get(0).getPath();
+            QueryWrapper<Pagetree> wrapper = new QueryWrapper<>();
+            wrapper.eq("path", path).eq("ancestors", ancestors);
+
+            List<Pagetree> pts = pagetreeMapper.selectList(wrapper);
+            for (Pagetree pt : pts) {
+                Map<Object, Object> page = new HashMap<Object, Object>();
+                page.put("name", pt.getName());
 
                 ancestors.add(pt.getId());
                 page.put("items", genResult(records, ancestors));

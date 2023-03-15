@@ -13,6 +13,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +93,35 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
     }
 
     @Override
+    public ResponseResult getProfile(List<String> siteNames) {
+        List<Object> editablePages = new ArrayList<Object>();
+        QueryWrapper<Page> wrapper = new QueryWrapper<>();
+        for (String siteName : siteNames) {
+            wrapper.clear();
+            wrapper.like("path", siteName).eq("name", "profile");
+
+            Page page = pageMapper.selectOne(wrapper);
+            if (page == null) {
+                return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
+            }
+
+            Map<Object, Object> editablePage = new HashMap<Object, Object>();
+            editablePage.put("siteName", siteName);
+            editablePage.put("type", page.getType());
+            editablePage.put("path", page.getPath());
+            editablePage.put("locale", page.getLocale());
+            editablePage.put("updated_at", page.getUpdatedAt());
+            editablePages.add(editablePage);
+        }
+        return ResponseResult.okResult(editablePages).HttpCode(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    public ResponseResult getAllByPath(String path) {
+        return ResponseResult.okResult(path).HttpCode(HttpServletResponse.SC_OK);
+    }
+
+    @Override
     public ResponseResult updatePage(Integer pageId, String path, String name, Page page) {
         if (pageId > 0 && path.equals("") && name.equals("")) {
             Page oldPage = pageMapper.selectById(pageId);
@@ -99,6 +132,8 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
             String oldPath = oldPage.getPath();
             String oldName = oldPage.getName();
             page.setId(pageId);
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            page.setUpdatedAt(df.format(LocalDateTime.now()));
             int r = pageMapper.updateById(page);
             if (r <= 0) {
                 return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_UPDATE).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -124,6 +159,8 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
                 return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_RESULT_FOUND).HttpCode(HttpServletResponse.SC_NOT_FOUND);
             }
 
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            page.setUpdatedAt(df.format(LocalDateTime.now()));
             int r = pageMapper.update(page, wrapper);
             if (r <= 0) {
                 return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.NO_DATA_WAS_UPDATE).HttpCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -168,4 +205,6 @@ public class PageServiceImpl extends ServiceImpl<PageMapper, Page> implements Pa
 
         return ResponseResult.setAppHttpCodeEnum(ResponseResult.AppHttpCodeEnum.BAD_REQUEST).HttpCode(HttpServletResponse.SC_BAD_REQUEST);
     }
+
+    
 }
